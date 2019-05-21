@@ -90,3 +90,5 @@ typings/
 # Configs
 .config/
 .env
+middleware/
+auth.js

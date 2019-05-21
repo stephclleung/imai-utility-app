@@ -8,6 +8,7 @@ const {
     drawNCards
 } = require('./image-generator');
 const ImageURL = require('./image-model');
+const jwt = require('jsonwebtoken');
 
 
 router.use(bodyParser.json());
@@ -22,6 +23,13 @@ router.get('/test', async (req, res) => {
 
 
 router.post('/image', async (appReq, res) => {
+
+    const token = appReq.header('Authorization').replace('Bearer ', '')
+    const decoded = jwt.verify(token, process.env.IMAI_UTIL_CAKE_SLICE);
+
+    if (decoded._id !== process.env.IMAI_UTIL_CAKE_PLATE) {
+        return res.status(400).send();
+    }
 
     //Check if the image already exists in database.
     try {
