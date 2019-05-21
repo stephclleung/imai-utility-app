@@ -33,11 +33,9 @@ router.post('/image', async (appReq, res) => {
         let cards = decodeCardName(appReq.body.name);
         let data;
         if (cards.length === 2) {
-            //user -> pair of cards
             console.log("IU Router : 2 cards");
             data = await drawTwoCards(cards);
         } else {
-            // let data = await cutCard(2, 3);
             data = await drawNCards(cards);
         }
 
@@ -54,6 +52,7 @@ router.post('/image', async (appReq, res) => {
             },
             json: true
         }
+
 
         request.post(options, async (error, response) => {
             if (error) console.log('Err', error);
