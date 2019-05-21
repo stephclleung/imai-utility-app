@@ -16,13 +16,15 @@ mongoose.connect(uri, {
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.status(200).send({ message: "Server is up." });
+})
+
 //routers for the utils
 app.use('/ua', uaRouter);
 app.use('/iu', iuRouter);
 
-app.get('/*', (req, res) => {
-    res.status(400).end();
-})
+
 
 app.put('/*', (req, res) => {
     res.status(400).end();
