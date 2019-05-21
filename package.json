@@ -5,14 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.0.0",
-    "env-cmd": "^9.0.1",
     "express": "^4.17.0",
     "images": "^3.0.2",
     "jsonwebtoken": "^8.5.1",
@@ -22,6 +20,6 @@
     "sharp": "^0.22.1"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+
   }
 }
