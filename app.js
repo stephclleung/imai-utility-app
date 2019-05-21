@@ -15,6 +15,8 @@ mongoose.connect(uri, {
 });
 
 app.use(express.json());
+
+//routers for the utils
 app.use('/ua', uaRouter);
 app.use('/iu', iuRouter);
 

@@ -4,21 +4,17 @@ const bodyParser = require('body-parser');
 const UserAction = require('./user-action-model');
 router.use(bodyParser.json());
 
-
+//PUTs a new user into the database. Not using POST due to clashing with PHE.
 router.put('/:target/action', async (req, res) => {
-    // console.log(req.params.target);
-    // console.log(req.body);
     let ua;
     let msg;
     try {
-
         ua = await UserAction.findUserByUserID(req.params.target);
         if (!ua) {
             ua = new UserAction({
                 userID: req.params.target,
                 action: req.body.action
             });
-
             msg = "Created";
         }
         else {
@@ -39,18 +35,25 @@ router.put('/:target/action', async (req, res) => {
     }
 })
 
-//POST request
+//POST request. Used by PHE exclusively.
 router.post('/:target/bet', async (req, res) => {
     console.log(req.body);
     try {
         ua = await UserAction.findUserByUserID(req.params.target);
+        if (!ua) {
+            //Wrong user.
+            return res.status(500).send();
+        }
+
         let bet = ua.action.toString();
         console.log('!! - ' + ua.userID + 'has requested to bet ' + ua.action);
 
-        //ua.action = 0;
-        await ua.save();
+        if (!req.body.debug) {
+            ua.action = 0;
+            await ua.save();
+            console.log("UA Router : Not debug, resetting after retrieving bet.");
+        }
 
-        // res.status(500).send({ error })
         res.status(200).send(bet);
     } catch (error) {
         console.log(error)
