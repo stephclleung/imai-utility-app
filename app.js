@@ -42,6 +42,6 @@ app.delete('/*', (req, res) => {
 
 //const PORT = process.env.PORT || 5002;
 app.listen(5000, () => {
-    console.log(`Server up at ${PORT}`);
+    console.log(`Server up at 5000`);
 })
 
