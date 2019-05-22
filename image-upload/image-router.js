@@ -49,6 +49,7 @@ router.post('/image', async (appReq, res) => {
         } else {
             console.log(`IU Router : ${cards.length} cards`);
             data = await drawNCards(cards);
+            console.log('IU Rourter data check : ', data);
         }
 
 
