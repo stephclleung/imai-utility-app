@@ -4,16 +4,11 @@ const sharp = require('sharp');
 const combineImage = require('combine-image');
 //const Jimp = require('jimp');
 
-//Card configs here
-// const deckImage = `${__dirname}/card_4.png`;
-// let cardWidth = 61;
-// let cardHeight = 80;
-// let cardWidth = 71;
-// let cardHeight = 96;
 
-
-
-//decodes the regex card name
+/** 
+*Decodes the name of a card from a regex string
+*@param {String} cardName Name of the file passed to function.
+ */
 const decodeCardName = (cardName) => {
 
     const regex = /[\d]-[0-4]/mg;
