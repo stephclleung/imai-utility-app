@@ -31,10 +31,13 @@ router.post('/image', async (appReq, res) => {
         return res.status(400).send();
     }
 
+    console.log("Confirmed jwt token.....")
+
     //Check if the image already exists in database.
     try {
         const iURL = await ImageURL.findImageURLByName(appReq.body.name);
         if (iURL) {
+            console.log("IU Router : Already exists in database.")
             return res.status(200).send({ message: "database", url: iURL });
         }
 
@@ -44,6 +47,7 @@ router.post('/image', async (appReq, res) => {
             console.log("IU Router : 2 cards");
             data = await drawTwoCards(cards);
         } else {
+            console.log(`IU Router : ${cards.length} cards`);
             data = await drawNCards(cards);
         }
 
@@ -61,7 +65,7 @@ router.post('/image', async (appReq, res) => {
             json: true
         }
 
-
+        console.log("IU Router : making a request...")
         request.post(options, async (error, response) => {
             if (error) console.log('Err', error);
             console.log(response.caseless.dict['x-post-rate-limit-remaining']);
