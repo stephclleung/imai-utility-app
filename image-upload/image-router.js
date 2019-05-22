@@ -5,7 +5,8 @@ const request = require('request');
 const {
     decodeCardName,
     drawTwoCards,
-    drawNCards
+    drawNCards,
+    returnThisDamnImage
 } = require('./image-generator');
 const ImageURL = require('./image-model');
 const jwt = require('jsonwebtoken');
@@ -43,15 +44,17 @@ router.post('/image', async (appReq, res) => {
 
         let cards = decodeCardName(appReq.body.name);
         let data;
-        if (cards.length === 2) {
-            console.log("IU Router : 2 cards");
-            data = await drawTwoCards(cards);
-        } else {
-            console.log(`IU Router : ${cards.length} cards`);
-            data = await drawNCards(cards);
-            console.log('IU Rourter data check : ', data);
-        }
+        // if (cards.length === 2) {
+        //     console.log("IU Router : 2 cards");
+        //     data = await drawTwoCards(cards);
+        // } else {
+        //     console.log(`IU Router : ${cards.length} cards`);
+        data = await returnThisDamnImage(cards);
+        //     console.log('IU Rourter data check : ', data);
+        // }
 
+        console.log(data);
+        //console.log('data.bitmap.data' + data.bitmap.data + 'which is type ' + typeof data.bitmap.data)
 
         let options = {
             url: 'https://api.imgur.com/3/upload',
@@ -69,9 +72,13 @@ router.post('/image', async (appReq, res) => {
         console.log("IU Router : making a request...")
         request.post(options, async (error, response) => {
             if (error) console.log('Err', error);
+            console.log(response.body);
             console.log(response.caseless.dict['x-post-rate-limit-remaining']);
 
             //After making it, get the url back and store it.
+            if (!response.body.data.link) {
+                return res.status(400).send({ message: "Could not complete request with external api." })
+            }
             const img = new ImageURL({ imageName: appReq.body.name, imageUrl: response.body.data.link })
             await img.save();
 
