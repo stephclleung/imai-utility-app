@@ -30,6 +30,7 @@ const decodeCardName = (cardName) => {
             cardArray.push({ deck: match[0], suit: match[2] })
         });
     }
+    console.log("IU generator : decoded card name")
     return cardArray;
 }
 
@@ -61,6 +62,7 @@ const cutNCards = async (cards) => {
             console.log('IU-generator | error ', err);
         }
     }
+    console.log("IU generator | cards completed")
     return cardArray;
 }
 
@@ -73,6 +75,7 @@ const combineNCards = (cards) => {
         baseImage.draw(images(item), (x + 5), 0);
         x += cardWidth;
     }
+    console.log("IU generator | cards combined")
     //return baseImage.save("output2.png");
     return baseImage.encode('png');
 }
@@ -80,12 +83,14 @@ const combineNCards = (cards) => {
 //Cuts and combines 3 - 5 cards
 const drawNCards = async (cards) => {
     const cardBufferArray = await cutNCards(cards);
+    console.log("IU generator | cards drawn")
     return combineNCards(cardBufferArray);
 }
 
 //Cuts and combine a pair of cards
 const drawTwoCards = async (cards) => {
     const cardBufferArray = await cutNCards(cards);
+    console.log("IU generator | 2 cards drawn")
     return images(92, 99)
         .draw(images(cardBufferArray[0]), 0, 0)
         .draw(images(cardBufferArray[1]), 20, 0)
