@@ -1,21 +1,21 @@
+"use strict"
 const images = require("images");
 const sharp = require('sharp');
 
 
 
 //Card configs here
-const deckImage = `${__dirname}/card_4.png`;
+// const deckImage = `${__dirname}/card_4.png`;
 // let cardWidth = 61;
 // let cardHeight = 80;
-let cardWidth = 71;
-let cardHeight = 96;
+// let cardWidth = 71;
+// let cardHeight = 96;
 
-// let spacingW = 73;
-// let spacingH = 98;
 
 
 //decodes the regex card name
 const decodeCardName = (cardName) => {
+
     const regex = /[\d]-[0-4]/mg;
     let m;
     let cardArray = [];
@@ -37,8 +37,12 @@ const decodeCardName = (cardName) => {
 
 //Cuts out a card from a sheet of 52 cards.
 const cutCard = async (deck, suit) => {
-    positionX = parseInt(deck);
-    positionY = parseInt(suit);
+    const deckImage = `${__dirname}/card_4.png`;
+    let cardWidth = 71;
+    let cardHeight = 96;
+    console.log('IU cutCard : deck ' + deck + ' and suit ' + suit)
+    let positionX = parseInt(deck);
+    let positionY = parseInt(suit);
     try {
         return sharp(deckImage)
             .extract({ left: (positionX * cardWidth), top: (positionY * cardHeight), width: cardWidth, height: cardHeight })
@@ -69,12 +73,12 @@ const cutNCards = async (cards) => {
 
 //Combine N sheets of cards
 const combineNCards = (cards) => {
-
+    let cardWidth = 71;
     let baseImage = images(362, 99);
     let x = 0;
     console.log("IU generator | Created base image and ready to combine ....")
     for (const item of cards) {
-
+        console.log('IU generator : baseImage ', baseImage);
         baseImage.draw(images(item), (x + 5), 0);
         x += cardWidth;
         console.log("IU generator | combining")
@@ -109,19 +113,19 @@ const drawTwoCards = async (cards) => {
 
 // Use to test: 
 
-// drawTwoCards([
-//     { deck: 5, suit: 2 },
-//     { deck: 7, suit: 3 }
-// ]);
-// drawNCards([
-//     { deck: 5, suit: 0 },
-//     { deck: 10, suit: 1 },
-//     { deck: 10, suit: 2 },
-//     { deck: 10, suit: 3 },
-//     { deck: 1, suit: 0 }
-// ]).then((x) => {
-//     console.log(x);
-// })
+drawTwoCards([
+    { deck: 5, suit: 2 },
+    { deck: 7, suit: 3 }
+]);
+drawNCards([
+    { deck: 5, suit: 0 },
+    { deck: 10, suit: 1 },
+    { deck: 10, suit: 2 },
+    { deck: 10, suit: 3 },
+    { deck: 1, suit: 0 }
+]).then((x) => {
+    console.log(x);
+})
 
 module.exports = {
     decodeCardName,
