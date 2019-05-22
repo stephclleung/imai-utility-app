@@ -63,7 +63,7 @@ const cutNCards = async (cards) => {
         }
     }
     console.log("IU generator | cards completed")
-    console.log("IU generator , data check | ", cardArray);
+    console.log("IU generator , data check  @ cutNcardds| ", cardArray);
     return cardArray;
 }
 
@@ -78,7 +78,7 @@ const combineNCards = (cards) => {
     }
     console.log("IU generator | cards combined")
     //return baseImage.save("output2.png");
-    console.log("IU generator , data check | ", baseImage);
+    console.log("IU generator , data check  @ combineNCards| ", baseImage);
     return baseImage.encode('png');
 }
 
@@ -86,7 +86,7 @@ const combineNCards = (cards) => {
 const drawNCards = async (cards) => {
     const cardBufferArray = await cutNCards(cards);
     console.log("IU generator | cards drawn")
-    console.log("IU generator , data check | ", cardBufferArray);
+    console.log("IU generator , data check @ drawNCards | ", cardBufferArray);
     return combineNCards(cardBufferArray);
 }
 
