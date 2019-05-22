@@ -2,32 +2,25 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const request = require('request');
-const {
-    decodeCardName,
-    drawTwoCards,
-    drawNCards,
-    returnThisDamnImage
-} = require('./image-generator');
+const { decodeCardName, returnThisDamnImage } = require('./image-generator');
 const ImageURL = require('./image-model');
 const jwt = require('jsonwebtoken');
 
 
 router.use(bodyParser.json());
-
 require('dotenv').config();
 
 
-router.get('/test', async (req, res) => {
-    const imgs = await ImageURL.find({});
-    res.send(imgs);
-})
-
-
+/**
+ *  Posts an image to the external API
+ *  Careful on the limits...
+ */
 router.post('/image', async (appReq, res) => {
 
     const token = appReq.header('Authorization').replace('Bearer ', '')
     const decoded = jwt.verify(token, process.env.IMAI_UTIL_CAKE_SLICE);
 
+    //Check the extra secret...
     if (decoded._id !== process.env.IMAI_UTIL_CAKE_PLATE) {
         return res.status(400).send();
     }
@@ -43,17 +36,13 @@ router.post('/image', async (appReq, res) => {
         }
 
         let cards = decodeCardName(appReq.body.name);
-        let data;
-        // if (cards.length === 2) {
-        //     console.log("IU Router : 2 cards");
-        //     data = await drawTwoCards(cards);
-        // } else {
-        //     console.log(`IU Router : ${cards.length} cards`);
-        data = await returnThisDamnImage(cards);
-        //     console.log('IU Rourter data check : ', data);
-        // }
 
-        console.log(data);
+        if (cards.length > 5 || cards.length < 2) {
+            return res.status(400).send({ message: "Invalid file name" });
+        }
+
+        let data = await returnThisDamnImage(cards);
+
         //console.log('data.bitmap.data' + data.bitmap.data + 'which is type ' + typeof data.bitmap.data)
 
         let options = {
@@ -73,7 +62,7 @@ router.post('/image', async (appReq, res) => {
         request.post(options, async (error, response) => {
             if (error) console.log('Err', error);
             console.log(response.body);
-            console.log(response.caseless.dict['x-post-rate-limit-remaining']);
+            //console.log(response.caseless.dict['x-post-rate-limit-remaining']);
 
             //After making it, get the url back and store it.
             if (!response.body.data.link) {
@@ -84,7 +73,7 @@ router.post('/image', async (appReq, res) => {
 
             let warning;
             if (response.caseless.dict['x-post-rate-limit-remaining'] < 100) {
-                warning = "warning : post limit dropping below 100!";
+                warning = `!! warning : post limit dropping below 100! Currently at : ${response.caseless.dict['x-post-rate-limit-remaining']}`;
                 return res.status(201).send({ message: "new", url: img.imageUrl, warning });
             }
 
@@ -97,28 +86,6 @@ router.post('/image', async (appReq, res) => {
     }
 });
 
-//debug only
-router.delete('/:imageID', async (req, res) => {
-    try {
-        const del = await ImageURL.findByIdAndDelete(req.params.imageID);
-        res.status(204).send();
-    } catch (error) {
-        console.log(error);
-    }
-
-})
-
-router.get('/:imageName', async (req, res) => {
-    console.log(req.query.name)
-    //console.log(req.params.name)
-    const iURL = await ImageURL.findImageURLByName(req.params.imageName);
-    if (iURL) {
-        res.status(200).send({ message: "Card in database!", url: iURL });
-    }
-    else {
-        console.log(iURL);
-    }
-});
 
 
 module.exports = router;
