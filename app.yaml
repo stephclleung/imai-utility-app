@@ -1,0 +1,24 @@
+runtime: nodejs
+env: flex
+
+health_check:
+  enable_health_check: true
+  check_interval_sec: 5                 # time interval between checks (in seconds)
+  timeout_sec: 4                        # health check timeout interval (in seconds)
+  unhealthy_threshold: 2                # an instance is unhealthy after failing this number of consecutive checks
+  healthy_threshold: 2                  # an unhealthy instance becomes healthy again after successfully responding to this number of consecutive checks
+  restart_threshold: 60                 # the number of consecutive check failures that will trigger a VM restart
+
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 1
+  cool_down_period_sec: 120             # time interval between auto scaling checks. It must be greater than or equal to 60 seconds.
+                                        # The default is 120 seconds
+  cpu_utilization:
+    target_utilization: 0.5             # CPU use is averaged across all running instances and is used to decide when to reduce or
+                                        # increase the number of instances (default 0.5)
+
+handlers:
+- url: /.*                              # regex
+  script: ignored                       # required, but ignored
+  secure: always                        # https
