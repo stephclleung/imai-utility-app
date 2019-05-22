@@ -100,7 +100,7 @@ const drawNCards = async (cards) => {
 //Cuts and combine a pair of cards
 const drawTwoCards = async (cards) => {
     const cardBufferArray = await cutNCards(cards);
-    console.log("IU generator | 2 cards drawn")
+    console.log("IU generator | 2 cards drawn , @ drawTwoCards data check, ", cardBufferArray)
     return images(92, 99)
         .draw(images(cardBufferArray[0]), 0, 0)
         .draw(images(cardBufferArray[1]), 20, 0)
@@ -113,19 +113,19 @@ const drawTwoCards = async (cards) => {
 
 // Use to test: 
 
-drawTwoCards([
-    { deck: 5, suit: 2 },
-    { deck: 7, suit: 3 }
-]);
-drawNCards([
-    { deck: 5, suit: 0 },
-    { deck: 10, suit: 1 },
-    { deck: 10, suit: 2 },
-    { deck: 10, suit: 3 },
-    { deck: 1, suit: 0 }
-]).then((x) => {
-    console.log(x);
-})
+// drawTwoCards([
+//     { deck: 5, suit: 2 },
+//     { deck: 7, suit: 3 }
+// ]);
+// drawNCards([
+//     { deck: 5, suit: 0 },
+//     { deck: 10, suit: 1 },
+//     { deck: 10, suit: 2 },
+//     { deck: 10, suit: 3 },
+//     { deck: 1, suit: 0 }
+// ]).then((x) => {
+//     console.log(x);
+// })
 
 module.exports = {
     decodeCardName,
