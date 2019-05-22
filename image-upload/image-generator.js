@@ -72,9 +72,12 @@ const combineNCards = (cards) => {
 
     let baseImage = images(362, 99);
     let x = 0;
+    console.log("IU generator | Created base image and ready to combine ....")
     for (const item of cards) {
+
         baseImage.draw(images(item), (x + 5), 0);
         x += cardWidth;
+        console.log("IU generator | combining")
     }
     console.log("IU generator | cards combined")
     //return baseImage.save("output2.png");
