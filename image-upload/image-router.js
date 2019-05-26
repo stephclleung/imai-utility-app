@@ -9,13 +9,30 @@ const jwt = require('jsonwebtoken');
 
 router.use(bodyParser.json());
 require('dotenv').config();
+router.get('/test', async (req, res) => {
+    console.log('In test.....')
+    try {
+        const imgs = await ImageURL.find({});
+        res.send(imgs);
+    } catch (error) {
+        console.log(error);
+    }
 
+})
 
 /**
  *  Posts an image to the external API
  *  Careful on the limits...
  */
 router.post('/image', async (appReq, res) => {
+
+    /**
+     * appReq.body = {
+     *  cardName: String
+     *  cards : [ array of cards ]
+     * }
+     */
+    console.log(appReq.body);
 
     const token = appReq.header('Authorization').replace('Bearer ', '')
     const decoded = jwt.verify(token, process.env.IMAI_UTIL_CAKE_SLICE);
@@ -29,19 +46,23 @@ router.post('/image', async (appReq, res) => {
 
     //Check if the image already exists in database.
     try {
-        const iURL = await ImageURL.findImageURLByName(appReq.body.name);
+        //const iURL = await ImageURL.findImageURLByName(appReq.body.name);
+        console.log('!!!!! >>> CARD NAME ', appReq.body.cardName)
+        const iURL = await ImageURL.findImageURLByName(appReq.body.cardName)
+        console.log('!!!! >>>> IURL ', iURL);
         if (iURL) {
             console.log("IU Router : Already exists in database.")
             return res.status(200).send({ message: "database", url: iURL });
         }
+        console.log("NO URL-------------------------");
+        //let cards = decodeCardName(appReq.body.name);
 
-        let cards = decodeCardName(appReq.body.name);
-
-        if (cards.length > 5 || cards.length < 2) {
+        //if (cards.length > 5 || cards.length < 2) {
+        if (appReq.body.cards.length > 5 || appReq.body.cards.length < 2) {
             return res.status(400).send({ message: "Invalid file name" });
         }
 
-        let data = await returnThisDamnImage(cards);
+        let data = await returnThisDamnImage(appReq.body.cards);
 
         //console.log('data.bitmap.data' + data.bitmap.data + 'which is type ' + typeof data.bitmap.data)
 
@@ -68,7 +89,7 @@ router.post('/image', async (appReq, res) => {
             if (!response.body.data.link) {
                 return res.status(400).send({ message: "Could not complete request with external api." })
             }
-            const img = new ImageURL({ imageName: appReq.body.name, imageUrl: response.body.data.link })
+            const img = new ImageURL({ imageName: appReq.body.cardName, imageUrl: response.body.data.link })
             await img.save();
 
             let warning;
@@ -83,6 +104,18 @@ router.post('/image', async (appReq, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({ warning: "ERROR OCCURED, image was neither created nor retrieved!" });
+    }
+});
+
+router.get('/:imageName', async (req, res) => {
+    console.log(req.query.name)
+    //console.log(req.params.name)
+    const iURL = await ImageURL.findImageURLByName(req.params.imageName);
+    if (iURL) {
+        res.status(200).send({ message: "Card in database!", url: iURL });
+    }
+    else {
+        console.log(iURL);
     }
 });
 
