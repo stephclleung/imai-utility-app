@@ -42,22 +42,25 @@ const cutCard = async (rank, type, half = false) => {
     let cardWidth = 71;
     let cardHeight = 96;
 
+    let cardWidth2 = cardWidth;
+
     if (half) {
-        cardWidth = 24;
+        cardWidth2 = 24;
     }
     //console.log('IU cutCard : rank ' + rank + ' and type ' + type)
     let positionX = parseInt(rank);
     let positionY = parseInt(type);
     try {
         return sharp(rankImage)
-            .extract({ left: (positionX * cardWidth), top: (positionY * cardHeight), width: cardWidth, height: cardHeight })
-            //.extract({ left: (positionX * spacingW), top: (positionY * spacingH), width: cardWidth, height: cardHeight })
+            .extract({ left: (positionX * cardWidth), top: (positionY * cardHeight), width: cardWidth2, height: cardHeight })
             .toBuffer({ resolveWithObject: true })
+        // .toFile("half.png");
 
     } catch (error) {
         //console.log(error);
     }
 }
+
 
 /** 
 * Cuts out a number of cards base on the provided array.
@@ -108,6 +111,9 @@ const combineNCards = async (cards, cb) => {
         //console.log('The res---> ', res);
         return cb(res);
     });
+    // img.write("output2.png", (err, res) => {
+    //     return cb(res);
+    // })
 }
 
 
@@ -141,7 +147,7 @@ const returnThisDamnImage = async (cards) => {
 
 // Unblcok for testing
 // returnThisDamnImage([
-//     { rank: 5, type: 0 },
+//     { rank: 0, type: 0 },
 //     { rank: 10, type: 1 },
 // ]).then((r) => {
 //     //console.log('did we finally get it')

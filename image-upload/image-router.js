@@ -42,29 +42,23 @@ router.post('/image', async (appReq, res) => {
         return res.status(400).send();
     }
 
-    console.log("Confirmed jwt token.....")
+    console.log("Util App | Image Router | Confirmed token.....")
 
     //Check if the image already exists in database.
     try {
-        //const iURL = await ImageURL.findImageURLByName(appReq.body.name);
-        console.log('!!!!! >>> CARD NAME ', appReq.body.cardName)
+        console.log('Util App | Image Router | Recv card name -  ', appReq.body.cardName)
         const iURL = await ImageURL.findImageURLByName(appReq.body.cardName)
-        console.log('!!!! >>>> IURL ', iURL);
+        console.log('Util App | Image Router | Url is - ', iURL);
         if (iURL) {
-            console.log("IU Router : Already exists in database.")
+            console.log(" - Already exists in database.")
             return res.status(200).send({ message: "database", url: iURL });
         }
-        console.log("NO URL-------------------------");
-        //let cards = decodeCardName(appReq.body.name);
-
-        //if (cards.length > 5 || cards.length < 2) {
+        console.log(" - Does not exist");
         if (appReq.body.cards.length > 5 || appReq.body.cards.length < 2) {
             return res.status(400).send({ message: "Invalid file name" });
         }
 
         let data = await returnThisDamnImage(appReq.body.cards);
-
-        //console.log('data.bitmap.data' + data.bitmap.data + 'which is type ' + typeof data.bitmap.data)
 
         let options = {
             url: 'https://api.imgur.com/3/upload',
@@ -79,11 +73,10 @@ router.post('/image', async (appReq, res) => {
             json: true
         }
 
-        console.log("IU Router : making a request...")
+        console.log("Util App | Image Router | Firing off a request to the external API...")
         request.post(options, async (error, response) => {
-            if (error) console.log('Err', error);
+            if (error) console.log('Util App | Image Router |  !!!! An error has occured', error);
             console.log(response.body);
-            //console.log(response.caseless.dict['x-post-rate-limit-remaining']);
 
             //After making it, get the url back and store it.
             if (!response.body.data.link) {
