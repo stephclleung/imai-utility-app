@@ -9,37 +9,7 @@ const jwt = require('jsonwebtoken');
 
 router.use(bodyParser.json());
 require('dotenv').config();
-// router.get('/test', async (req, res) => {
-//     console.log('In test.....')
-//     try {
-//         const imgs = await ImageURL.find({});
-//         res.send(imgs);
-//     } catch (error) {
-//         console.log(error);
-//     }
 
-// })
-
-router.get('/oldDocs', async (req, res) => {
-    console.log("---------oldDocs-------------------")
-    try {
-        const imgs = await ImageURL.find({ created_at: { $lte: '2019-05-29' } })
-        // query = { created_at: { $lte: '2019-05-29' } };
-        // ImageURL.deleteMany(query, (err, result) => {
-        //     if (err) console.log("Error in deleting");
-        //     else {
-        //         res.status(204).send(result);
-        //     }
-        // })
-        console.log("Getting imgs")
-        console.log(imgs);
-        res.status(200).send(imgs);
-    } catch (error) {
-        console.log("Caught error");
-        console.log(error)
-        res.status(404).send(error);
-    }
-})
 
 
 /**
