@@ -16,7 +16,7 @@ mongoose.connect(uri, {
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/wakeup', (req, res) => {
     res.status(200).send({ message: "Server is up." });
 })
 

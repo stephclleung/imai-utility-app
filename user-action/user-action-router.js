@@ -61,10 +61,5 @@ router.post('/:target/bet', async (req, res) => {
     }
 })
 
-//GET request | TODO : remove before production.
-router.get('/test', async (req, res) => {
-    const users = await UserAction.find({});
-    res.send(users);
-})
 
 module.exports = router;

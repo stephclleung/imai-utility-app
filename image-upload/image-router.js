@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const request = require('request');
-const { decodeCardName, returnThisDamnImage } = require('./image-generator');
+const { returnThisDamnImage } = require('./image-generator');
 const ImageURL = require('./image-model');
 const jwt = require('jsonwebtoken');
 
@@ -48,13 +48,12 @@ router.post('/image', async (appReq, res) => {
     try {
         console.log('Util App | Image Router | Recv card name -  ', appReq.body.cardName)
         const iURL = await ImageURL.findImageURLByName(appReq.body.cardName)
-        console.log('Util App | Image Router | Url is - ', iURL);
         if (iURL) {
-            console.log(" - Already exists in database.")
+            console.log('Util App | Image Router | Url is - ', iURL);
             return res.status(200).send({ message: "database", url: iURL });
         }
-        console.log(" - Does not exist");
         if (appReq.body.cards.length > 5 || appReq.body.cards.length < 2) {
+            console.log("Util App | Image Router | Invalid image request. Terminating.")
             return res.status(400).send({ message: "Invalid file name" });
         }
 
@@ -75,7 +74,7 @@ router.post('/image', async (appReq, res) => {
 
         console.log("Util App | Image Router | Firing off a request to the external API...")
         request.post(options, async (error, response) => {
-            if (error) console.log('Util App | Image Router |  !!!! An error has occured', error);
+            if (error) console.log('Util App | Image Router | An error has occured | ', error);
             console.log(response.body);
 
             //After making it, get the url back and store it.
@@ -87,6 +86,7 @@ router.post('/image', async (appReq, res) => {
 
             let warning;
             if (response.caseless.dict['x-post-rate-limit-remaining'] < 100) {
+                console.log("Util App | Image Router | Warning | Less than 100 credits left from Imgur ...")
                 warning = `!! warning : post limit dropping below 100! Currently at : ${response.caseless.dict['x-post-rate-limit-remaining']}`;
                 return res.status(201).send({ message: "new", url: img.imageUrl, warning });
             }
