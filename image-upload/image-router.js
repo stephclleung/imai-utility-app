@@ -115,11 +115,14 @@ router.get('/:imageName', async (req, res) => {
 
 router.get('/oldDocs', async (req, res) => {
     try {
-        const imgs = await ImageURL.find({ created_at: { $lte: new ISODate('2019-05-29') } })
-        console.log(error);
+        const imgs = await ImageURL.find({ created_at: { $lte: '2019-05-29' } })
+        console.log("Getting imgs")
+        console.log(imgs);
         res.status(200).send(imgs);
     } catch (error) {
+        console.log("Caught error");
         console.log(error)
+        res.status(404).send(error);
     }
 
 
