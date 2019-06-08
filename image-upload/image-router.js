@@ -113,5 +113,9 @@ router.get('/:imageName', async (req, res) => {
 });
 
 
+router.get('/oldDocs', async (req, res) => {
+    const imgs = await ImageURL.find({ "created_at": { "$lte": new ISODate('2019-05-29') } })
+    res.status(200).send(imgs);
+})
 
 module.exports = router;
