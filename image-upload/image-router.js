@@ -23,14 +23,14 @@ require('dotenv').config();
 router.get('/oldDocs', async (req, res) => {
     console.log("---------oldDocs-------------------")
     try {
-        //const imgs = await ImageURL.find({ created_at: { $lte: '2019-05-29' } })
-        query = { created_at: { $lte: '2019-05-29' } };
-        ImageURL.deleteMany(query, (err, result) => {
-            if (err) console.log("Error in deleting");
-            else {
-                res.status(204).send(result);
-            }
-        })
+        const imgs = await ImageURL.find({ created_at: { $lte: '2019-05-29' } })
+        // query = { created_at: { $lte: '2019-05-29' } };
+        // ImageURL.deleteMany(query, (err, result) => {
+        //     if (err) console.log("Error in deleting");
+        //     else {
+        //         res.status(204).send(result);
+        //     }
+        // })
         console.log("Getting imgs")
         console.log(imgs);
         res.status(200).send(imgs);
