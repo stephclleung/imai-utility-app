@@ -46,12 +46,11 @@ router.post('/:target/bet', async (req, res) => {
         }
 
         let bet = ua.action.toString();
-        console.log('!! - ' + ua.userID + 'has requested to bet ' + ua.action);
+        console.log('Util App | User Router  | ' + ua.userID + ' has requested to bet ' + ua.action + ' chips.');
 
         if (!req.body.debug) {
             ua.action = 0;
             await ua.save();
-            console.log("UA Router : Not debug, resetting after retrieving bet.");
         }
 
         res.status(200).send(bet);
