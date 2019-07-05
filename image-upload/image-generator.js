@@ -9,29 +9,33 @@ const combineImage = require('combine-image');
 *   @param {String} cardName Name of the file passed to function.
 *   @returns {Array} An array of decoded cards.
  */
-// const decodeCardName = (cardName) => {
+const decodeCardName = (cardName) => {
 
-//     const regex = /[\d]-[0-4]/mg;
-//     let m;
-//     let cardArray = [];
-//     while ((m = regex.exec(cardName)) !== null) {
-//         // This is necessary to avoid infinite loops with zero-width matches
-//         if (m.index === regex.lastIndex) {
-//             regex.lastIndex++;
-//         }
-//         // The result can be accessed through the `m`-variable.
-//         m.forEach((match, groupIndex) => {
-//             // //console.log(`Found match, group ${groupIndex}: ${match}`);
-//             cardArray.push({ rank: match[0], type: match[2] })
-//         });
-//     }
-//     //console.log("IU generator : decoded card name")
-//     return cardArray;
-// }
+    if (cardName.length < 3){
+        return null;
+    }
+    const regex = /(?<rank>[0-9]|([1][0-3]))-(?<type>[0-4])/mg;
+    // [0-9]|([1][0-3])-[0-4] [\d]-[0-4]
+    let m;
+    let cardArray = [];
+    while ((m = regex.exec(cardName)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+
+        const { groups : {rank, type}} = m
+        cardArray.push({ rank, type })
+    }
+
+   
+    //console.log("IU generator : decoded card name")
+    return cardArray;
+}
 
 
 /** 
-* Decodes the name of a card from a regex string
+* Cuts a card out of a sheet of 52 cards (single) image
 * @param {number} rank number or string
 * @param {number} type number or string
 * @param {boolean} half indication of half card, default sets to false.
@@ -47,7 +51,7 @@ const cutCard = async (rank, type, half = false) => {
     if (half) {
         cardWidth2 = 24;
     }
-    //console.log('IU cutCard : rank ' + rank + ' and type ' + type)
+
     let positionX = parseInt(rank);
     let positionY = parseInt(type);
     try {
