@@ -83,7 +83,6 @@ const cutNCards = async (cards) => {
         try {
             let card;
             if (half) {
-                //console.log('Half card recorded')
                 card = await cutCard(item.rank, item.type, true);
                 half = false;   //only ever need 1 half card.
             } else {
@@ -92,12 +91,10 @@ const cutNCards = async (cards) => {
 
             cardArray.push(card.data);
         } catch (err) {
-            //console.log('IU-generator | error ', err);
+            console.log('IU-generator | error ', err);
         }
     }
-    //console.log("IU generator | cards completed")
-    //console.log("IU generator , data check  @ cutNcardds| size : ", cardArray.length);
-    return cardArray;
+       return cardArray;
 }
 
 /** 
@@ -108,16 +105,9 @@ const cutNCards = async (cards) => {
  */
 const combineNCards = async (cards, cb) => {
     let img = await combineImage(cards);
-    //return img.getBuffer("image/png", cb);
     img.getBuffer("image/png", (err, res) => {
-        // //console.log('The res', res)
-        // //console.log('Finished returning buffer.');
-        //console.log('The res---> ', res);
         return cb(res);
     });
-    // img.write("output2.png", (err, res) => {
-    //     return cb(res);
-    // })
 }
 
 
@@ -129,10 +119,7 @@ const combineNCards = async (cards, cb) => {
  */
 const drawNCards = async (cards, cb) => {
     const cardBufferArray = await cutNCards(cards);
-    ////console.log("IU generator | cards drawn")
-    //console.log("IU generator , data check @ drawNCards | ", cardBufferArray);
     combineNCards(cardBufferArray, (res) => {
-        //console.log('Out of combine N cards,', res)
         cb(res);
     })
 }
@@ -145,18 +132,9 @@ const drawNCards = async (cards, cb) => {
 const returnThisDamnImage = async (cards) => {
     return new Promise((resolve, reject) => {
         return drawNCards(cards, resolve);
-        ////console.log(results);
     })
 }
 
-// Unblcok for testing
-// returnThisDamnImage([
-//     { rank: 0, type: 0 },
-//     { rank: 10, type: 1 },
-// ]).then((r) => {
-//     //console.log('did we finally get it')
-//     //console.log(r);
-// })
 
 module.exports = {
     decodeCardName,
