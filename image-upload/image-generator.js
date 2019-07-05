@@ -9,25 +9,25 @@ const combineImage = require('combine-image');
 *   @param {String} cardName Name of the file passed to function.
 *   @returns {Array} An array of decoded cards.
  */
-const decodeCardName = (cardName) => {
+// const decodeCardName = (cardName) => {
 
-    const regex = /[\d]-[0-4]/mg;
-    let m;
-    let cardArray = [];
-    while ((m = regex.exec(cardName)) !== null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (m.index === regex.lastIndex) {
-            regex.lastIndex++;
-        }
-        // The result can be accessed through the `m`-variable.
-        m.forEach((match, groupIndex) => {
-            // //console.log(`Found match, group ${groupIndex}: ${match}`);
-            cardArray.push({ rank: match[0], type: match[2] })
-        });
-    }
-    //console.log("IU generator : decoded card name")
-    return cardArray;
-}
+//     const regex = /[\d]-[0-4]/mg;
+//     let m;
+//     let cardArray = [];
+//     while ((m = regex.exec(cardName)) !== null) {
+//         // This is necessary to avoid infinite loops with zero-width matches
+//         if (m.index === regex.lastIndex) {
+//             regex.lastIndex++;
+//         }
+//         // The result can be accessed through the `m`-variable.
+//         m.forEach((match, groupIndex) => {
+//             // //console.log(`Found match, group ${groupIndex}: ${match}`);
+//             cardArray.push({ rank: match[0], type: match[2] })
+//         });
+//     }
+//     //console.log("IU generator : decoded card name")
+//     return cardArray;
+// }
 
 
 /** 
