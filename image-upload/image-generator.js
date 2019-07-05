@@ -61,7 +61,7 @@ const cutCard = async (rank, type, half = false) => {
         // .toFile("half.png");
 
     } catch (error) {
-        //console.log(error);
+        console.log(error);
     }
 }
 
