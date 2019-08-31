@@ -20,6 +20,10 @@ app.get('/wakeup', (req, res) => {
     res.status(200).send({ message: "Server is up." });
 })
 
+app.get('/token', (req, res) => {
+    const token = jwt.sign(user, IMAI)
+})
+
 //routers for the utils
 app.use('/ua', uaRouter);
 app.use('/iu', iuRouter);
@@ -40,8 +44,6 @@ app.delete('/*', (req, res) => {
     res.status(400).end();
 })
 
-const PORT = process.env.PORT //|| 5002;
-app.listen(PORT, () => {
-    console.log(`Server up at ${PORT}`);
-})
+
+module.exports = app;
 
