@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "jest"
+    "start": "node start.js",
+    "test": "jest --watch",
+    "dev": "nodemon start.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,10 +22,19 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.2.5",
     "mongoose": "^5.5.9",
+    "rand-token": "^0.4.0",
     "request": "^2.88.0",
     "sharp": "^0.22.1"
   },
   "devDependencies": {
-    "jest": "^24.8.0"
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }

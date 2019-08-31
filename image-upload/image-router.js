@@ -11,7 +11,6 @@ router.use(bodyParser.json());
 require('dotenv').config();
 
 
-
 /**
  *  Posts an image to the external API
  *  Careful on the limits...
@@ -27,14 +26,21 @@ router.post('/image', async (appReq, res) => {
     console.log(appReq.body);
 
     const token = appReq.header('Authorization').replace('Bearer ', '')
-    const decoded = jwt.verify(token, process.env.IMAI_UTIL_CAKE_SLICE);
 
-    //Check the extra secret...
-    if (decoded._id !== process.env.IMAI_UTIL_CAKE_PLATE) {
-        return res.status(400).send();
+    try {
+        const decoded = jwt.verify(token, process.env.IMAI_UTIL_CAKE_SLICE);
+
+        //Check the extra secret...
+        if (decoded._id !== process.env.IMAI_UTIL_CAKE_PLATE) {
+            return res.status(400).send();
+        }
+
+        console.log("Util App | Image Router | Confirmed token.....")
+    } catch (error) {
+        console.log('Caught err', error)
+        if (error)
+            return res.status(401).send()
     }
-
-    console.log("Util App | Image Router | Confirmed token.....")
 
     //Check if the image already exists in database.
     try {
@@ -92,15 +98,15 @@ router.post('/image', async (appReq, res) => {
     }
 });
 
-router.get('/:imageName', async (req, res) => {
+router.get(/^\/([0-9\_]+)$/, async (req, res) => {
     console.log(req.query.name)
-    //console.log(req.params.name)
     const iURL = await ImageURL.findImageURLByName(req.params.imageName);
     if (iURL) {
         res.status(200).send({ message: "Card in database!", url: iURL });
     }
     else {
         console.log(iURL);
+        res.status(404).send({ message: 'not found' })
     }
 });
 
