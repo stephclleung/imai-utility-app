@@ -104,6 +104,21 @@ router.get('/:imageName', async (req, res) => {
     }
 });
 
+router.get('/', (req, res) => {
+    res.status(405).send();
+})
+
+router.get('/image', (req, res) => {
+    res.status(405).send();
+})
+
+router.put('/image', (req, res) => {
+    res.status(405).send();
+})
+
+router.patch('/image', (req, res) => {
+    res.status(405).send();
+})
 
 
 module.exports = router;
