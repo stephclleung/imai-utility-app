@@ -147,18 +147,21 @@ const returnThisDamnImage = async (cards) => {
 }
 
 const getUploadOptions = (data) => {
-    return {
-        url: 'https://api.imgur.com/3/image',
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ' + process.env.IMGUR_ACCESS_TOKEN
-        },
-        body: {
-            'image': data.toString('base64'),
-            'type': 'base64'
-        },
-        json: true
+    if (data) {
+        return {
+            url: 'https://api.imgur.com/3/image',
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + process.env.IMGUR_ACCESS_TOKEN
+            },
+            body: {
+                'image': data.toString('base64'),
+                'type': 'base64'
+            },
+            json: true
+        }
     }
+    return null;
 }
 
 module.exports = {

@@ -1,7 +1,7 @@
-const { decodeCardName, returnThisDamnImage } = require('./image-generator');
+const { decodeCardName, returnThisDamnImage, getUploadOptions } = require('./image-generator');
 const fs = require('fs')
 
-describe('Testing card name decode in multiples', () => {
+describe('decodeCardName : ', () => {
     test('Should decode 0-3 to object', () => {
         expect(decodeCardName("0-3")).toEqual([{ rank: '0', type: '3' }])
     });
@@ -15,7 +15,7 @@ describe('Testing card name decode in multiples', () => {
     });
 })
 
-describe('Testing card image generator', () => {
+describe('Image Generator : ', () => {
     test('Should generate image object for 0-0 and 10-1', (done) => {
         const twoCards = [
             { rank: 0, type: 0 },
@@ -39,4 +39,31 @@ describe('Testing card image generator', () => {
             .catch(e => console.log(e));
         done();
     });
+})
+
+describe("getUploadOptions", () => {
+    test('Should return options object with data given.', (done) => {
+        fs.readFile('output', (err, localImageBuffer) => {
+            if (err) throw err;
+            const options = getUploadOptions(localImageBuffer);
+            expect(options).toStrictEqual({
+                url: 'https://api.imgur.com/3/image',
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + process.env.IMGUR_ACCESS_TOKEN
+                },
+                body: {
+                    'image': localImageBuffer.toString('base64'),
+                    'type': 'base64'
+                },
+                json: true
+            })
+            done();
+        })
+    })
+
+    test('Should return null without data given', () => {
+        const options = getUploadOptions(null);
+        expect(options).toBeNull();
+    })
 })
