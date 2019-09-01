@@ -17,3 +17,7 @@ Utility app for [PokerBot](https://github.com/BrianTsui2018/imai-poker) to handl
 
 ## User-action:
 *-* Handles a PUT request and POST request. Request fired by PokerBot.
+
+## Unit Tests (Sept 1 2019)
+*-* Added unit tests for **/iu** , **/ua** and image-generator.js.
+
