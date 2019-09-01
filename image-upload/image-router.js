@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const request = require('request');
-const { returnThisDamnImage } = require('./image-generator');
+const { decodeCardName, returnThisDamnImage, getUploadOptions } = require('./image-generator');
 const ImageURL = require('./image-model');
 const jwt = require('jsonwebtoken');
-
-
+const sendMail = require('./contact');
 router.use(bodyParser.json());
 require('dotenv').config();
 
@@ -24,51 +23,41 @@ router.post('/image', async (appReq, res) => {
      * }
      */
     console.log(appReq.body);
-
-    const token = appReq.header('Authorization').replace('Bearer ', '')
-
     try {
+        const token = appReq.header('Authorization').replace('Bearer ', '')
         const decoded = jwt.verify(token, process.env.IMAI_UTIL_CAKE_SLICE);
 
         //Check the extra secret...
         if (decoded._id !== process.env.IMAI_UTIL_CAKE_PLATE) {
+            console.log(decoded)
             return res.status(400).send();
         }
 
         console.log("Util App | Image Router | Confirmed token.....")
     } catch (error) {
-        console.log('Caught err', error)
-        if (error)
-            return res.status(401).send()
+        sendMail(error);
+        return res.status(401).send()
     }
 
     //Check if the image already exists in database.
     try {
         console.log('Util App | Image Router | Recv card name -  ', appReq.body.cardName)
+
+        const cardName = decodeCardName(appReq.body.cardName);
         const iURL = await ImageURL.findImageURLByName(appReq.body.cardName)
+
         if (iURL) {
             console.log('Util App | Image Router | Url is - ', iURL);
             return res.status(200).send({ message: "database", url: iURL });
         }
-        if (appReq.body.cards.length > 5 || appReq.body.cards.length < 2) {
+
+        if (!cardName || appReq.body.cards.length > 5 || appReq.body.cards.length < 2) {
             console.log("Util App | Image Router | Invalid image request. Terminating.")
             return res.status(400).send({ message: "Invalid file name" });
         }
 
         let data = await returnThisDamnImage(appReq.body.cards);
-
-        let options = {
-            url: 'https://api.imgur.com/3/upload',
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + process.env.IMGUR_ACCESS_TOKEN
-            },
-            body: {
-                'image': data.toString('base64'),
-                'type': 'base64'
-            },
-            json: true
-        }
+        let options = getUploadOptions(data);
 
         console.log("Util App | Image Router | Firing off a request to the external API...")
         request.post(options, async (error, response) => {
@@ -91,9 +80,8 @@ router.post('/image', async (appReq, res) => {
 
             res.status(201).send({ message: "new", url: img.imageUrl });
         })
-
     } catch (error) {
-        console.log(error);
+        console.log('IU-Router | Error', error);
         res.status(500).send({ warning: "ERROR OCCURED, image was neither created nor retrieved!" });
     }
 });
@@ -110,7 +98,7 @@ router.get(/^\/([0-9\_]+)$/, async (req, res) => {
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/image', (req, res) => {
     res.status(405).send();
 })
 

@@ -15,6 +15,7 @@
     "npm": "6.4.1"
   },
   "dependencies": {
+    "@sendgrid/mail": "^6.4.0",
     "combine-image": "^1.0.3",
     "dotenv": "^8.0.0",
     "express": "^4.17.0",
