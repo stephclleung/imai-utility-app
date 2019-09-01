@@ -16,17 +16,19 @@ router.put('/:target/action', async (req, res) => {
                 action: req.body.action
             });
             msg = "Created";
+            code = 201;
         }
         else {
             ua.action = req.body.action;
             msg = "Updated";
+            code = 200;
         }
 
         await ua.save();
-        res.status(201).send({
+        res.status(code).send({
             userID: ua.userID,
-            action: ua.action,
-            messsage: msg
+            action: ua.action || 0,
+            message: msg
         })
 
     } catch (error) {
@@ -42,7 +44,7 @@ router.post('/:target/bet', async (req, res) => {
         ua = await UserAction.findUserByUserID(req.params.target);
         if (!ua) {
             //Wrong user.
-            return res.status(500).send();
+            throw new Error('Cannot find user.')
         }
 
         let bet = ua.action.toString();
@@ -56,9 +58,13 @@ router.post('/:target/bet', async (req, res) => {
         res.status(200).send(bet);
     } catch (error) {
         console.log(error)
-        res.status(500).send();
+        res.status(400).send();
     }
 })
 
+router.get('/*', (req, res) => res.status(405).send())
+router.patch('/*', (req, res) => res.status(405).send())
+router.post('/*', (req, res) => res.status(405).send())
+router.delete('/*', (req, res) => res.status(405).send())
 
 module.exports = router;

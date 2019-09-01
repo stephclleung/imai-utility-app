@@ -98,21 +98,10 @@ router.get(/^\/([0-9\_]+)$/, async (req, res) => {
     }
 });
 
-router.get('/image', (req, res) => {
-    res.status(405).send();
-})
-
-router.get('/image', (req, res) => {
-    res.status(405).send();
-})
-
-router.put('/image', (req, res) => {
-    res.status(405).send();
-})
-
-router.patch('/image', (req, res) => {
-    res.status(405).send();
-})
+router.get('/*', (req, res) => res.status(405).send())
+router.patch('/*', (req, res) => res.status(405).send())
+router.post('/*', (req, res) => res.status(405).send())
+router.delete('/*', (req, res) => res.status(405).send())
 
 
 module.exports = router;
