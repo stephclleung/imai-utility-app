@@ -8,10 +8,11 @@ const combineImage = require('combine-image');
 *Decodes the name of a card from a regex string
 *   @param {String} cardName Name of the file passed to function.
 *   @returns {Array} An array of decoded cards.
+* Note: 0-2_0-2 = A of Spades A of Spades
  */
 const decodeCardName = (cardName) => {
 
-    if (cardName.length < 3){
+    if (cardName.length < 3) {
         return null;
     }
     const regex = /(?<rank>[0-9]|([1][0-3]))-(?<type>[0-4])/mg;
@@ -24,11 +25,14 @@ const decodeCardName = (cardName) => {
             regex.lastIndex++;
         }
 
-        const { groups : {rank, type}} = m
+        const { groups: { rank, type } } = m
+        if (type > 3 || type < 0 || rank < 0 || type > 12) {
+            return null; //error occured
+        }
         cardArray.push({ rank, type })
     }
 
-   
+
     //console.log("IU generator : decoded card name")
     return cardArray;
 }
@@ -91,10 +95,11 @@ const cutNCards = async (cards) => {
 
             cardArray.push(card.data);
         } catch (err) {
-            console.log('IU-generator | error ', err);
+            console.log('IU-generator | cut cards | error ', err);
+            throw new Error(err)
         }
     }
-       return cardArray;
+    return cardArray;
 }
 
 /** 
@@ -118,10 +123,16 @@ const combineNCards = async (cards, cb) => {
 * @returns {Buffer} A single buffer ready to be uploaded
  */
 const drawNCards = async (cards, cb) => {
-    const cardBufferArray = await cutNCards(cards);
-    combineNCards(cardBufferArray, (res) => {
-        cb(res);
-    })
+    try {
+        const cardBufferArray = await cutNCards(cards);
+        combineNCards(cardBufferArray, (res) => {
+            cb(res);
+        })
+    } catch (error) {
+        console.log('drawNCards.....', error);
+        throw new Error(error);
+    }
+
 }
 
 /** 
@@ -131,12 +142,27 @@ const drawNCards = async (cards, cb) => {
  */
 const returnThisDamnImage = async (cards) => {
     return new Promise((resolve, reject) => {
-        return drawNCards(cards, resolve);
+        return drawNCards(cards, resolve, reject);
     })
 }
 
+const getUploadOptions = (data) => {
+    return {
+        url: 'https://api.imgur.com/3/image',
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + process.env.IMGUR_ACCESS_TOKEN
+        },
+        body: {
+            'image': data.toString('base64'),
+            'type': 'base64'
+        },
+        json: true
+    }
+}
 
 module.exports = {
     decodeCardName,
-    returnThisDamnImage
+    returnThisDamnImage,
+    getUploadOptions
 };

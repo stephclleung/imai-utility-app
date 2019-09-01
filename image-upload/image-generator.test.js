@@ -2,12 +2,12 @@ const { decodeCardName, returnThisDamnImage } = require('./image-generator');
 const fs = require('fs')
 
 describe('Testing card name decode in multiples', () => {
-    test('Should decode 0-4 to object', () => {
-        expect(decodeCardName("0-4")).toEqual([{ rank: '0', type: '4' }])
+    test('Should decode 0-3 to object', () => {
+        expect(decodeCardName("0-3")).toEqual([{ rank: '0', type: '3' }])
     });
 
-    test('Should decode 11-4 and 12-3 into an array', () => {
-        expect(decodeCardName("11-4_12-3")).toEqual([{ rank: '11', type: '4' }, { rank: '12', type: '3' }])
+    test('Should decode 11-2 and 12-1 into an array', () => {
+        expect(decodeCardName("11-2_12-1")).toEqual([{ rank: '11', type: '2' }, { rank: '12', type: '1' }])
     });
 
     test('Should not decode incorrect card name', () => {
